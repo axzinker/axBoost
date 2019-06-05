@@ -82,7 +82,9 @@ parcelMe <- function(data, nParcels = 3, parcelName = "parcel",
     } else {
       parcels <- cbind(parcels, rowMeans(data[,unlist(itemnamesPerParcel[i])]), stringsAsFactors = FALSE)
     }
-    names(parcels)[i] <- paste0(parcelName,"_",i)
+    tempParcelName <- paste0(parcelName,"_",i)
+    names(parcels)[i] <- tempParcelName
+    attr(parcels[,tempParcelName], "items") <- unlist(itemnamesPerParcel[i])
   }
 
   return(parcels)
