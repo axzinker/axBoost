@@ -15,3 +15,5 @@ Imports:
 Collate: 
     'drawDD.R'
     'parcelMe.R'
+URL: https://github.com/axzinker/axBoost
+BugReports: https://github.com/axzinker/axBoost/issues
