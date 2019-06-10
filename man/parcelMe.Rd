@@ -8,16 +8,19 @@ parcelMe(data, nParcels = 3, parcelName = "parcel",
   parallelizedBy = "loadings")
 }
 \arguments{
-\item{data}{Matrix / DataFrame with items in columns.}
+\item{data}{Matrix / DataFrame with items in columns. For
+parallelizedBy =="IAT", data must be a logfile prepared for the cleanIAT()
+function of the IAT package.}
 
 \item{nParcels}{Number of parcels to build. Default is 3.}
 
 \item{parcelName}{Name stem of parcel names to which the parcelnumber
 will be added. Default is "parcel".}
 
-\item{parallelizedBy}{Method to build parallel parcels. Can be "loadings"
-or "discrimination". Factor loadings are computed by a PAF with oblique
-rotation. Default is "loadings".}
+\item{parallelizedBy}{Method to build parallel parcels. Can be "loadings",
+"discrimination" or "IAT". Factor loadings are computed by a PAF with oblique
+rotation. Default is "loadings". For "IAT" the data must be a logfile prepeared
+for the use of the cleanIAT() function of the IAT package.}
 }
 \value{
 Returns a data frame containing the parcels.

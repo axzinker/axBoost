@@ -4,13 +4,16 @@
 #' e.g. for Structural Equation Modelling, according to the parameters
 #' specified below.
 #'
-#' @param data Matrix / DataFrame with items in columns.
+#' @param data Matrix / DataFrame with items in columns. For
+#' parallelizedBy =="IAT", data must be a logfile prepared for the cleanIAT()
+#' function of the IAT package.
 #' @param nParcels Number of parcels to build. Default is 3.
 #' @param parcelName Name stem of parcel names to which the parcelnumber
 #' will be added. Default is "parcel".
-#' @param parallelizedBy Method to build parallel parcels. Can be "loadings"
-#' or "discrimination". Factor loadings are computed by a PAF with oblique
-#' rotation. Default is "loadings".
+#' @param parallelizedBy Method to build parallel parcels. Can be "loadings",
+#' "discrimination" or "IAT". Factor loadings are computed by a PAF with oblique
+#' rotation. Default is "loadings". For "IAT" the data must be a logfile prepeared
+#' for the use of the cleanIAT() function of the IAT package.
 #' @return Returns a data frame containing the parcels.
 #'
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
@@ -28,7 +31,7 @@ parcelMe <- function(data, nParcels = 3, parcelName = "parcel",
   stopifnot(nParcels > 1) # build at least two parcels
   stopifnot(nParcels < ncol(data)) # Number of parcels must be lower than number of items
   stopifnot(is.data.frame(data))
-  stopifnot(parallelizedBy == "loadings" | parallelizedBy == "discrimination")
+  stopifnot(parallelizedBy == "loadings" | parallelizedBy == "discrimination" | parallelizedBy == "IAT")
 
   if ((ncol(data) %% nParcels) != 0) {
     warning("Unequal number of items per parcel have be generated")
@@ -72,20 +75,40 @@ parcelMe <- function(data, nParcels = 3, parcelName = "parcel",
     }
   }
 
-  # initialize variables
-  parcels <- data.frame(matrix(, nrow = nrow(data), ncol = 0))
+  if (parallelizedBy == "loadings" | parallelizedBy == "discrimination") {
+    # initialize variables
+    parcels <- data.frame(matrix(, nrow = nrow(data), ncol = 0))
 
-  # attach parcel rowMeans to dataframe
-  for (i in 1:nParcels) {
-    if (length(unlist(itemnamesPerParcel[i])) == 1) {
-      parcels <- cbind(parcels, data[,unlist(itemnamesPerParcel[i])], stringsAsFactors = FALSE)
-    } else {
-      parcels <- cbind(parcels, rowMeans(data[,unlist(itemnamesPerParcel[i])]), stringsAsFactors = FALSE)
+    # attach parcel rowMeans to dataframe
+    for (i in 1:nParcels) {
+      if (length(unlist(itemnamesPerParcel[i])) == 1) {
+        parcels <- cbind(parcels, data[,unlist(itemnamesPerParcel[i])], stringsAsFactors = FALSE)
+      } else {
+        parcels <- cbind(parcels, rowMeans(data[,unlist(itemnamesPerParcel[i])]), stringsAsFactors = FALSE)
+      }
+      tempParcelName <- paste0(parcelName,"_",i)
+      names(parcels)[i] <- tempParcelName
+      attr(parcels[,tempParcelName], "items") <- unlist(itemnamesPerParcel[i])
     }
-    tempParcelName <- paste0(parcelName,"_",i)
-    names(parcels)[i] <- tempParcelName
-    attr(parcels[,tempParcelName], "items") <- unlist(itemnamesPerParcel[i])
   }
 
-  return(parcels)
+  if (parallelizedBy == "IAT") {
+    parcels <- data.frame(matrix(, nrow = length(unique(data$subject)), ncol = 0))
+    for (i in 1:nParcels) {
+      IATtemp <- subset(data, subset = ((data$trialnum %% nParcels) == (i - 1)))
+      parcels[i] <- IAT::cleanIAT(my_data = IATtemp,
+                                block_name = "blocknum",
+                                trial_blocks = c("3","4","6","7"),
+                                session_id = "subject",
+                                trial_latency = "latency",
+                                trial_error = "correct",
+                                v_error = 1,
+                                v_extreme = 2,
+                                v_std = 1)["IAT"]
+      tempParcelName <- paste0(parcelName,"_",i)
+      names(parcels)[i] <- tempParcelName
+    }
+  }
+
+return(parcels)
 }
