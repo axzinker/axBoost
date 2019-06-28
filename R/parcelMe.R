@@ -33,9 +33,10 @@ parcelMe <- function(data, nParcels = 3, parcelName = "parcel",
   stopifnot(is.data.frame(data))
   stopifnot(parallelizedBy == "loadings" | parallelizedBy == "discrimination" | parallelizedBy == "IAT")
 
-  if ((ncol(data) %% nParcels) != 0) {
-    warning("Unequal number of items per parcel have be generated")
-  }
+  # Warnings commented because they become annoying
+  #if ((ncol(data) %% nParcels) != 0) {
+  #  warning("Unequal number of items per parcel have be generated")
+  #}
 
   if (parallelizedBy == "loadings") {
     # compute PFA
