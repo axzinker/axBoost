@@ -4,8 +4,12 @@
 \alias{parcelMe}
 \title{Parcels a dataframe with item columns}
 \usage{
-parcelMe(data, nParcels = 3, parcelName = "parcel",
-  parallelizedBy = "loadings")
+parcelMe(
+  data,
+  nParcels = 3,
+  parcelName = "parcel",
+  parallelizedBy = "loadings"
+)
 }
 \arguments{
 \item{data}{Matrix / DataFrame with items in columns. For

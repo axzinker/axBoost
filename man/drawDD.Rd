@@ -4,23 +4,32 @@
 \alias{drawDD}
 \title{Draw a double dissociation based on regression coefficients}
 \usage{
-drawDD(data, predUpper, predLower, critUpper, critLower, moderator = "",
-  moderatorSD = c(-1, 1), modBothPaths = FALSE, printReg = FALSE,
-  title = "")
+drawDD(
+  data,
+  predUpper,
+  predLower,
+  critUpper,
+  critLower,
+  moderator = "",
+  moderatorSD = c(-1, 1),
+  modBothPaths = FALSE,
+  printReg = FALSE,
+  title = ""
+)
 }
 \arguments{
 \item{data}{A data frame containing the numeric columns predUpper,
 predLower, critUpper, critLower, and optionally moderator.}
 
-\item{predUpper}{Predictor of the upper double dissociation path.}
+\item{predUpper}{String with the name of the Predictor of the upper double dissociation path.}
 
-\item{predLower}{Predictor of the lower double dissociation path.}
+\item{predLower}{String with the name of the Predictor of the lower double dissociation path.}
 
-\item{critUpper}{Criterion of the upper double dissociation path.}
+\item{critUpper}{String with the name of the Criterion of the upper double dissociation path.}
 
-\item{critLower}{Criterion of the lower double dissociation path.}
+\item{critLower}{String with the name of the Criterion of the lower double dissociation path.}
 
-\item{moderator}{Moderator of the upper and lower direct path from
+\item{moderator}{String with the name of the Moderator of the upper and lower direct path from
 predictor to criterion}
 
 \item{moderatorSD}{Defines the standard deviations for which the slope

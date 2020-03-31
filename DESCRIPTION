@@ -1,7 +1,7 @@
 Package: axBoost
 Type: Package
 Title: axBoost: A collection of useful functions
-Version: 0.1.1
+Version: 0.1.2
 Author: Axel Zinkernagel
 Maintainer: Axel Zinkernagel <zinkernagel@uni-landau.de>
 Description: A collection of useful various loose functions. See the documentation of each function for what it is intended.
@@ -9,10 +9,11 @@ Depends: R (>= 3.6.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Imports:
     psych (>= 1.8.12),
-    IAT (>= 0.3)
+    IAT (>= 0.3),
+    plotrix (>= 3.7)
 Collate: 
     'drawDD.R'
     'parcelMe.R'

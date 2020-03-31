@@ -25,11 +25,11 @@
 #'
 #' @param data A data frame containing the numeric columns predUpper,
 #' predLower, critUpper, critLower, and optionally moderator.
-#' @param predUpper Predictor of the upper double dissociation path.
-#' @param predLower Predictor of the lower double dissociation path.
-#' @param critUpper Criterion of the upper double dissociation path.
-#' @param critLower Criterion of the lower double dissociation path.
-#' @param moderator Moderator of the upper and lower direct path from
+#' @param predUpper String with the name of the Predictor of the upper double dissociation path.
+#' @param predLower String with the name of the Predictor of the lower double dissociation path.
+#' @param critUpper String with the name of the Criterion of the upper double dissociation path.
+#' @param critLower String with the name of the Criterion of the lower double dissociation path.
+#' @param moderator String with the name of the Moderator of the upper and lower direct path from
 #' predictor to criterion
 #' @param moderatorSD Defines the standard deviations for which the slope
 #' lines are plotted. Default is -1 and 1. For example, for experimetal group
@@ -53,7 +53,7 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
                    moderator = "", moderatorSD = c(-1,1), modBothPaths = FALSE,
                    printReg = FALSE, title = ""){
 
-    # Define constants
+  # Define constants
   # Colors for sig., marginal sig. and not sig. paths in the plot
   colNotSig <- "black"
   colMargSig <- "darkred"
@@ -82,6 +82,10 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
     names(lower$coefficients) <- c("(Intercept)", predLower, predUpper)
   }
 
+  # compute correlations
+  predCor <- cor.test(data[[predUpper]], data[[predLower]], use = "pairwise")
+  critCor <- cor.test(data[[critUpper]], data[[critLower]], use = "pairwise")
+
   # rewrite the formula call
   if (printReg) {
     formulaCallUpper <- as.character(upper$call[2])
@@ -100,6 +104,8 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
     lower$call[2] <- formulaCallLower
     print(summary(upper))
     print(summary(lower))
+    print(predCor)
+    print(critCor)
   }
 
   # make basic plot
@@ -130,6 +136,30 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
   lower_p_sign <- replace(lower_p_sign, 2*pt(abs(coef(lower) / sqrt(diag(vcov(lower)))) * -1, df = lower$df.residual) < .1, "+")
   lower_p_col <- replace(lower_p_col,2*pt(abs(coef(lower) / sqrt(diag(vcov(lower)))) * -1, df = lower$df.residual) < .05, colSig)
   lower_p_sign <- replace(lower_p_sign,2*pt(abs(coef(lower) / sqrt(diag(vcov(lower)))) * -1, df = lower$df.residual) < .05, "*")
+
+  # mark significant correlations
+  predCor_p_col <- c(colNotSig)
+  predCor_p_sign <- c("")
+  predCor_p_col <- replace(predCor_p_col, predCor$p.value < .1, colMargSig)
+  predCor_p_sign <- replace(predCor_p_sign, predCor$p.value < .1, "+")
+  predCor_p_col <- replace(predCor_p_col, predCor$p.value < .05, colSig)
+  predCor_p_sign <- replace(predCor_p_sign, predCor$p.value < .05, "*")
+
+  critCor_p_col <- c(colNotSig)
+  critCor_p_sign <- c("")
+  critCor_p_col <- replace(critCor_p_col, critCor$p.value < .1, colMargSig)
+  critCor_p_sign <- replace(critCor_p_sign, critCor$p.value < .1, "+")
+  critCor_p_col <- replace(critCor_p_col, critCor$p.value < .05, colSig)
+  critCor_p_sign <- replace(critCor_p_sign, critCor$p.value < .05, "*")
+
+  # Plot correlations (equal for all regression models)
+  text(-10.3, 0, paste0(round(predCor$estimate, digits = 2),predCor_p_sign), col = predCor_p_col, cex = 1, pos = 4)
+  text(8.3, 0, paste0(round(critCor$estimate, digits = 2),critCor_p_sign), col = critCor_p_col, cex = 1, pos = 4)
+
+  # add correlation arcs
+  plotrix::draw.arc(-7.5, 0, 3, deg1 = 213, deg2 = 147, col = predCor_p_col)
+  plotrix::draw.arc(7.5, 0, 3, deg1 = 33, deg2 = 0, col = critCor_p_col)
+  plotrix::draw.arc(7.5, 0, 3, deg1 = 360, deg2 = 327, col = critCor_p_col)
 
   # Plots must be defined differently for each model, because the sequence of predictors is different for each lm() model
   ###########
