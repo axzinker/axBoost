@@ -241,10 +241,10 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
     text(6, -5.3, paste0(round(coef(lower)[3], digits = 2),lower_p_sign[3]), col = lower_p_col[3], cex = 1, pos = 4) # moderator -> critUpper
     text(-2, -3.3, paste0(round(coef(lower)[5], digits = 2),lower_p_sign[5]), col = lower_p_col[5], cex = 1, pos = 4) # moderator -> critUpper
     # add second moderator path
-    arrows(-2.2,4,-2.2,1.1,col = upper_p_col[6], angle = 10) # moderator -> path2Upper
-    arrows(-2.2,-4,-2.2,-1.1,col = lower_p_col[6], angle = 10) # moderator -> path2Lower
-    text(-2.2, 1.5, paste0(round(coef(upper)[6], digits = 2),upper_p_sign[6]), col = upper_p_col[6], cex = 1, pos = 4) # moderator -> critUpper
-    text(-2.2, -1.5, paste0(round(coef(lower)[6], digits = 2),lower_p_sign[6]), col = lower_p_col[6], cex = 1, pos = 4) # moderator -> critUpper
+    arrows(-2.3,4,-2.3,-1.1,col = upper_p_col[6], angle = 10) # moderator -> path2Upper
+    arrows(-2.1,-4,-2.2,1.1,col = lower_p_col[6], angle = 10) # moderator -> path2Lower
+    text(-2.3, 1.5, paste0(round(coef(upper)[6], digits = 2),upper_p_sign[6]), col = upper_p_col[6], cex = 1, pos = 4) # moderator -> critUpper
+    text(-2.1, -1.5, paste0(round(coef(lower)[6], digits = 2),lower_p_sign[6]), col = lower_p_col[6], cex = 1, pos = 4) # moderator -> critUpper
   }
 }
 # Function drawDD ends
