@@ -35,10 +35,11 @@
 #' lines are plotted. Default is -1 and 1. For example, for experimetal group
 #' / control group design use c(0,1).
 #' @param modBothPaths If TRUE, a moderator effect is computed for both paths
+#' @param robust Logical value if robust parameter estimation is used (robust::lmRob() and WRS2::pbcor())
 #' @param printReg Print the summary () of the regression coefficients.
 #' @param title Title of plot
 #'
-#' @return Returns a plot with a (moderated) double dissociation.
+#' @return Returns a plot with a (moderated) (robust) double dissociation.
 #'
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'
@@ -51,7 +52,7 @@
 #' @export
 drawDD <- function(data, predUpper, predLower, critUpper, critLower,
                    moderator = "", moderatorSD = c(-1,1), modBothPaths = FALSE,
-                   printReg = FALSE, title = ""){
+                   robust = FALSE, printReg = FALSE, title = ""){
 
   # Define constants
   # Colors for sig., marginal sig. and not sig. paths in the plot
@@ -59,34 +60,61 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
   colMargSig <- "darkred"
   colSig <- "red"
 
-  # compute the regressions
-  if (moderator != "") {
-    if (modBothPaths == FALSE) {
-      upper <- lm(scale(data[[critUpper]]) ~ scale(data[[predUpper]]) * scale(data[[moderator]]) + scale(data[[predLower]]))
-      lower <- lm(scale(data[[critLower]]) ~ scale(data[[predLower]]) * scale(data[[moderator]]) + scale(data[[predUpper]]))
+  if (robust == TRUE) {
+    # compute the robust regressions
+    if (moderator != "") {
+      if (modBothPaths == FALSE) {
+        upper <- robust::lmRob(scale(data[[critUpper]]) ~ scale(data[[predUpper]]) * scale(data[[moderator]]) + scale(data[[predLower]]))
+        lower <- robust::lmRob(scale(data[[critLower]]) ~ scale(data[[predLower]]) * scale(data[[moderator]]) + scale(data[[predUpper]]))
+        # Rename variables
+        names(upper$coefficients) <- c("(Intercept)", predUpper, moderator, predLower, paste0(predUpper,":",moderator))
+        names(lower$coefficients) <- c("(Intercept)", predLower, moderator, predUpper, paste0(predLower,":",moderator))
+      } else {# modBothPaths == TRUE
+        upper <- robust::lmRob(scale(data[[critUpper]]) ~ scale(data[[predUpper]]) * scale(data[[moderator]]) + scale(data[[predLower]]) * scale(data[[moderator]]))
+        lower <- robust::lmRob(scale(data[[critLower]]) ~ scale(data[[predLower]]) * scale(data[[moderator]]) + scale(data[[predUpper]]) * scale(data[[moderator]]))
+        # Rename variables
+        names(upper$coefficients) <- c("(Intercept)", predUpper, moderator, predLower, paste0(predUpper,":",moderator), paste0(moderator,":",predLower))
+        names(lower$coefficients) <- c("(Intercept)", predLower, moderator, predUpper, paste0(predLower,":",moderator), paste0(moderator,":",predUpper))
+      }
+    } else {
+      upper <- robust::lmRob(scale(data[[critUpper]]) ~ scale(data[[predUpper]]) + scale(data[[predLower]]))
+      lower <- robust::lmRob(scale(data[[critLower]]) ~ scale(data[[predLower]]) + scale(data[[predUpper]]))
       # Rename variables
-      names(upper$coefficients) <- c("(Intercept)", predUpper, moderator, predLower, paste0(predUpper,":",moderator))
-      names(lower$coefficients) <- c("(Intercept)", predLower, moderator, predUpper, paste0(predLower,":",moderator))
-    } else {# modBothPaths == TRUE
-      upper <- lm(scale(data[[critUpper]]) ~ scale(data[[predUpper]]) * scale(data[[moderator]]) + scale(data[[predLower]]) * scale(data[[moderator]]))
-      lower <- lm(scale(data[[critLower]]) ~ scale(data[[predLower]]) * scale(data[[moderator]]) + scale(data[[predUpper]]) * scale(data[[moderator]]))
-      # Rename variables
-      names(upper$coefficients) <- c("(Intercept)", predUpper, moderator, predLower, paste0(predUpper,":",moderator), paste0(moderator,":",predLower))
-      names(lower$coefficients) <- c("(Intercept)", predLower, moderator, predUpper, paste0(predLower,":",moderator), paste0(moderator,":",predUpper))
+      names(upper$coefficients) <- c("(Intercept)", predUpper, predLower)
+      names(lower$coefficients) <- c("(Intercept)", predLower, predUpper)
     }
+    # compute robust correlations
+    predCor <- WRS2::pbcor(cbind(data[[predUpper]], data[[predLower]]))
+    critCor <- WRS2::pbcor(cbind(data[[critUpper]], data[[critLower]]))
   } else {
-    upper <- lm(scale(data[[critUpper]]) ~ scale(data[[predUpper]]) + scale(data[[predLower]]))
-    lower <- lm(scale(data[[critLower]]) ~ scale(data[[predLower]]) + scale(data[[predUpper]]))
-    # Rename variables
-    names(upper$coefficients) <- c("(Intercept)", predUpper, predLower)
-    names(lower$coefficients) <- c("(Intercept)", predLower, predUpper)
+    # compute the regressions
+    if (moderator != "") {
+      if (modBothPaths == FALSE) {
+        upper <- lm(scale(data[[critUpper]]) ~ scale(data[[predUpper]]) * scale(data[[moderator]]) + scale(data[[predLower]]))
+        lower <- lm(scale(data[[critLower]]) ~ scale(data[[predLower]]) * scale(data[[moderator]]) + scale(data[[predUpper]]))
+        # Rename variables
+        names(upper$coefficients) <- c("(Intercept)", predUpper, moderator, predLower, paste0(predUpper,":",moderator))
+        names(lower$coefficients) <- c("(Intercept)", predLower, moderator, predUpper, paste0(predLower,":",moderator))
+      } else {# modBothPaths == TRUE
+        upper <- lm(scale(data[[critUpper]]) ~ scale(data[[predUpper]]) * scale(data[[moderator]]) + scale(data[[predLower]]) * scale(data[[moderator]]))
+        lower <- lm(scale(data[[critLower]]) ~ scale(data[[predLower]]) * scale(data[[moderator]]) + scale(data[[predUpper]]) * scale(data[[moderator]]))
+        # Rename variables
+        names(upper$coefficients) <- c("(Intercept)", predUpper, moderator, predLower, paste0(predUpper,":",moderator), paste0(moderator,":",predLower))
+        names(lower$coefficients) <- c("(Intercept)", predLower, moderator, predUpper, paste0(predLower,":",moderator), paste0(moderator,":",predUpper))
+      }
+    } else {
+      upper <- lm(scale(data[[critUpper]]) ~ scale(data[[predUpper]]) + scale(data[[predLower]]))
+      lower <- lm(scale(data[[critLower]]) ~ scale(data[[predLower]]) + scale(data[[predUpper]]))
+      # Rename variables
+      names(upper$coefficients) <- c("(Intercept)", predUpper, predLower)
+      names(lower$coefficients) <- c("(Intercept)", predLower, predUpper)
+    }
+    # compute correlations
+    predCor <- cor.test(data[[predUpper]], data[[predLower]], use = "pairwise")
+    critCor <- cor.test(data[[critUpper]], data[[critLower]], use = "pairwise")
   }
 
-  # compute correlations
-  predCor <- cor.test(data[[predUpper]], data[[predLower]], use = "pairwise")
-  critCor <- cor.test(data[[critUpper]], data[[critLower]], use = "pairwise")
-
-  # rewrite the formula call
+  # rewrite the formula call (remove R functions from variable names)
   if (printReg) {
     formulaCallUpper <- as.character(upper$call[2])
     formulaCallLower <- as.character(lower$call[2])
@@ -122,39 +150,59 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
   text(-10,2.5, predUpper, col = "black", cex = .7, pos = 4) # Pred1
   text(-10,-2.5, predLower, col = "black", cex = .7, pos = 4) # Pred2
 
-  # mark significant paths
+  # mark significant paths (red, darkred, + or *)
   upper_p_col <- c(colNotSig,colNotSig,colNotSig,colNotSig,colNotSig,colNotSig)
   upper_p_sign <- c("","","","","","")
-  upper_p_col <- replace(upper_p_col, 2*pt(abs(coef(upper) / sqrt(diag(vcov(upper)))) * -1, df = upper$df.residual) < .1, colMargSig)
-  upper_p_sign <- replace(upper_p_sign, 2*pt(abs(coef(upper) / sqrt(diag(vcov(upper)))) * -1, df = upper$df.residual) < .1, "+")
-  upper_p_col <- replace(upper_p_col,2*pt(abs(coef(upper) / sqrt(diag(vcov(upper)))) * -1, df = upper$df.residual) < .05, colSig)
-  upper_p_sign <- replace(upper_p_sign,2*pt(abs(coef(upper) / sqrt(diag(vcov(upper)))) * -1, df = upper$df.residual) < .05, "*")
-
   lower_p_col <- c(colNotSig,colNotSig,colNotSig,colNotSig,colNotSig,colNotSig)
   lower_p_sign <- c("","","","","","")
-  lower_p_col <- replace(lower_p_col, 2*pt(abs(coef(lower) / sqrt(diag(vcov(lower)))) * -1, df = lower$df.residual) < .1, colMargSig)
-  lower_p_sign <- replace(lower_p_sign, 2*pt(abs(coef(lower) / sqrt(diag(vcov(lower)))) * -1, df = lower$df.residual) < .1, "+")
-  lower_p_col <- replace(lower_p_col,2*pt(abs(coef(lower) / sqrt(diag(vcov(lower)))) * -1, df = lower$df.residual) < .05, colSig)
-  lower_p_sign <- replace(lower_p_sign,2*pt(abs(coef(lower) / sqrt(diag(vcov(lower)))) * -1, df = lower$df.residual) < .05, "*")
+
+  if (robust == TRUE) { # axel fix me from here
+    upper_p_col <- replace(upper_p_col, 2*pt(abs(coef(upper) / sqrt(diag(upper$cov))) * -1, df = upper$df.residual) < .1, colMargSig)
+    upper_p_sign <- replace(upper_p_sign, 2*pt(abs(coef(upper) / sqrt(diag(upper$cov))) * -1, df = upper$df.residual) < .1, "+")
+    upper_p_col <- replace(upper_p_col,2*pt(abs(coef(upper) / sqrt(diag(upper$cov))) * -1, df = upper$df.residual) < .05, colSig)
+    upper_p_sign <- replace(upper_p_sign,2*pt(abs(coef(upper) / sqrt(diag(upper$cov))) * -1, df = upper$df.residual) < .05, "*")
+
+    lower_p_col <- replace(lower_p_col, 2*pt(abs(coef(lower) / sqrt(diag(lower$cov))) * -1, df = lower$df.residual) < .1, colMargSig)
+    lower_p_sign <- replace(lower_p_sign, 2*pt(abs(coef(lower) / sqrt(diag(lower$cov))) * -1, df = lower$df.residual) < .1, "+")
+    lower_p_col <- replace(lower_p_col,2*pt(abs(coef(lower) / sqrt(diag(lower$cov))) * -1, df = lower$df.residual) < .05, colSig)
+    lower_p_sign <- replace(lower_p_sign,2*pt(abs(coef(lower) / sqrt(diag(lower$cov))) * -1, df = lower$df.residual) < .05, "*")
+  } else {
+    upper_p_col <- replace(upper_p_col, 2*pt(abs(coef(upper) / sqrt(diag(vcov(upper)))) * -1, df = upper$df.residual) < .1, colMargSig)
+    upper_p_sign <- replace(upper_p_sign, 2*pt(abs(coef(upper) / sqrt(diag(vcov(upper)))) * -1, df = upper$df.residual) < .1, "+")
+    upper_p_col <- replace(upper_p_col,2*pt(abs(coef(upper) / sqrt(diag(vcov(upper)))) * -1, df = upper$df.residual) < .05, colSig)
+    upper_p_sign <- replace(upper_p_sign,2*pt(abs(coef(upper) / sqrt(diag(vcov(upper)))) * -1, df = upper$df.residual) < .05, "*")
+
+    lower_p_col <- replace(lower_p_col, 2*pt(abs(coef(lower) / sqrt(diag(vcov(lower)))) * -1, df = lower$df.residual) < .1, colMargSig)
+    lower_p_sign <- replace(lower_p_sign, 2*pt(abs(coef(lower) / sqrt(diag(vcov(lower)))) * -1, df = lower$df.residual) < .1, "+")
+    lower_p_col <- replace(lower_p_col,2*pt(abs(coef(lower) / sqrt(diag(vcov(lower)))) * -1, df = lower$df.residual) < .05, colSig)
+    lower_p_sign <- replace(lower_p_sign,2*pt(abs(coef(lower) / sqrt(diag(vcov(lower)))) * -1, df = lower$df.residual) < .05, "*")
+  }
 
   # mark significant correlations
   predCor_p_col <- c(colNotSig)
   predCor_p_sign <- c("")
+  critCor_p_col <- c(colNotSig)
+  critCor_p_sign <- c("")
+
   predCor_p_col <- replace(predCor_p_col, predCor$p.value < .1, colMargSig)
   predCor_p_sign <- replace(predCor_p_sign, predCor$p.value < .1, "+")
   predCor_p_col <- replace(predCor_p_col, predCor$p.value < .05, colSig)
   predCor_p_sign <- replace(predCor_p_sign, predCor$p.value < .05, "*")
 
-  critCor_p_col <- c(colNotSig)
-  critCor_p_sign <- c("")
   critCor_p_col <- replace(critCor_p_col, critCor$p.value < .1, colMargSig)
   critCor_p_sign <- replace(critCor_p_sign, critCor$p.value < .1, "+")
   critCor_p_col <- replace(critCor_p_col, critCor$p.value < .05, colSig)
   critCor_p_sign <- replace(critCor_p_sign, critCor$p.value < .05, "*")
 
+
   # Plot correlations (equal for all regression models)
-  text(-10.3, 0, paste0(round(predCor$estimate, digits = 2),predCor_p_sign), col = predCor_p_col, cex = 1, pos = 4)
-  text(8.3, 0, paste0(round(critCor$estimate, digits = 2),critCor_p_sign), col = critCor_p_col, cex = 1, pos = 4)
+  if (robust == TRUE) {
+    text(-10.3, 0, paste0(round(predCor$cor, digits = 2),predCor_p_sign), col = predCor_p_col, cex = 1, pos = 4)
+    text(8.3, 0, paste0(round(critCor$cor, digits = 2),critCor_p_sign), col = critCor_p_col, cex = 1, pos = 4)
+  } else {
+    text(-10.3, 0, paste0(round(predCor$estimate, digits = 2),predCor_p_sign), col = predCor_p_col, cex = 1, pos = 4)
+    text(8.3, 0, paste0(round(critCor$estimate, digits = 2),critCor_p_sign), col = critCor_p_col, cex = 1, pos = 4)
+  }
 
   # add correlation arcs
   plotrix::draw.arc(-7.5, 0, 3, deg1 = 213, deg2 = 147, col = predCor_p_col)

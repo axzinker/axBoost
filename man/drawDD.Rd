@@ -13,6 +13,7 @@ drawDD(
   moderator = "",
   moderatorSD = c(-1, 1),
   modBothPaths = FALSE,
+  robust = FALSE,
   printReg = FALSE,
   title = ""
 )
@@ -38,12 +39,14 @@ lines are plotted. Default is -1 and 1. For example, for experimetal group
 
 \item{modBothPaths}{If TRUE, a moderator effect is computed for both paths}
 
+\item{robust}{Logical value if robust parameter estimation is used (robust::lmRob() and WRS2::pbcor())}
+
 \item{printReg}{Print the summary () of the regression coefficients.}
 
 \item{title}{Title of plot}
 }
 \value{
-Returns a plot with a (moderated) double dissociation.
+Returns a plot with a (moderated) (robust) double dissociation.
 }
 \description{
 Draws a double dissociation based on regression coefficients.
