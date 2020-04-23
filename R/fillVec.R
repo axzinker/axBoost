@@ -1,3 +1,5 @@
+#' Add missing elements to a vector of consecutive numbers
+#'
 #' Fill a vector, which should be of consecutive numbers, but due to missings
 #' is not containing only consecutive numbers (e.g., the residuals of a lm())
 #' with values (default is NA).
