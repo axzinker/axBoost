@@ -10,7 +10,10 @@ drawDD(
   predLower,
   critUpper,
   critLower,
-  moderator = "",
+  covUpper = NULL,
+  covLower = NULL,
+  covResidAsDep = FALSE,
+  moderator = NULL,
   moderatorSD = c(-1, 1),
   modBothPaths = FALSE,
   robust = FALSE,
@@ -20,15 +23,21 @@ drawDD(
 }
 \arguments{
 \item{data}{A data frame containing the numeric columns predUpper,
-predLower, critUpper, critLower, and optionally moderator.}
+predLower, critUpper, critLower, and optionally covariates and a moderator.}
 
-\item{predUpper}{String with the name of the Predictor of the upper double dissociation path.}
+\item{predUpper}{String with the name of the predictor of the upper double dissociation path.}
 
-\item{predLower}{String with the name of the Predictor of the lower double dissociation path.}
+\item{predLower}{String with the name of the predictor of the lower double dissociation path.}
 
-\item{critUpper}{String with the name of the Criterion of the upper double dissociation path.}
+\item{critUpper}{String with the name of the criterion of the upper double dissociation path.}
 
-\item{critLower}{String with the name of the Criterion of the lower double dissociation path.}
+\item{critLower}{String with the name of the criterion of the lower double dissociation path.}
+
+\item{covUpper}{Optional string vector with the names of the covariates for the criterion of the upper double dissociation path.}
+
+\item{covLower}{Optional string vector with the names of the covariates for the criterion of the lower double dissociation path.}
+
+\item{covResidAsDep}{If FALSE (the default), a multiple regression is computed. If TRUE, the residuals of the covariate regression are used as dependent variable.}
 
 \item{moderator}{String with the name of the Moderator of the upper and lower direct path from
 predictor to criterion}
@@ -37,11 +46,11 @@ predictor to criterion}
 lines are plotted. Default is -1 and 1. For example, for experimetal group
 / control group design use c(0,1).}
 
-\item{modBothPaths}{If TRUE, a moderator effect is computed for both paths}
+\item{modBothPaths}{If TRUE, a moderator effect is computed for both paths. Default is FALSE.}
 
-\item{robust}{Logical value if robust parameter estimation is used (robust::lmRob() and WRS2::pbcor())}
+\item{robust}{Logical value if robust parameter estimation is used (robust::lmRob() and WRS2::pbcor()). Default is FALSE.}
 
-\item{printReg}{Print the summary () of the regression coefficients.}
+\item{printReg}{Print the summary () of the regression coefficients. Default is FALSE.}
 
 \item{title}{Title of plot}
 }
@@ -57,6 +66,16 @@ Assuming a double dissociation, the function computes two regressions:
 critUpper ~ predUpper + predLower
 
 critLower ~ predLower + predUpper
+
+If covariates are givem, the function is computed as:
+
+critUpper ~ covUpper + predUpper + predLower
+
+critLower ~ covLower + predLower + predUpper
+
+If covResidAsDep is false, this is done as a multiple regression. If it is
+true, this is done for the residuals of the covUpper/covLower regressions
+as dependent variable. It works also in combination with moderators.
 
 If a moderator is given, the regressions are computed as:
 

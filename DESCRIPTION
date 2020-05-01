@@ -4,7 +4,7 @@ Title: axBoost: A collection of useful functions
 Version: 0.1.5
 Author: Axel Zinkernagel
 Maintainer: Axel Zinkernagel <zinkernagel@uni-landau.de>
-Description: A collection of useful various loose functions. See the documentation of each function for what it is intended.
+Description: A collection of useful various loose R functions. See the documentation of each function for what it is intended.
 Depends: R (>= 3.6.0)
 License: GPL-3
 Encoding: UTF-8

@@ -4,11 +4,13 @@
 \alias{fillVec}
 \title{Add missing elements to a vector of consecutive numbers}
 \usage{
-fillVec(data, replValue = NA, verbose = FALSE)
+fillVec(x, y = NULL, replValue = NA, verbose = FALSE)
 }
 \arguments{
-\item{data}{A numeric vector which should contain consecutive numbers,
+\item{x}{A numeric vector which should contain consecutive numbers,
 but isn't.}
+
+\item{y}{An optional second parallel vector which is also filled with replValue.}
 
 \item{replValue}{A numeric atomic vector which is used for replacement
 (default is NA).}
@@ -23,11 +25,15 @@ replaced by replValue (e.g., NA).
 \description{
 Fill a vector, which should be of consecutive numbers, but due to missings
 is not containing only consecutive numbers (e.g., the residuals of a lm())
-with values (default is NA).
+with values (default is NA). Optionally fill a second parallel vector also
+with replValue
 }
 \examples{
-data = c(1,2,3,4,5,6,7,8,10,11,12,13,16,17,18,20,25,30)
-dataMod <- fillVec(data,verbose = TRUE)
+data <- c(1,2,3,4,5,6,7,8,10,11,12,13,16,17,18,20,25,30)
+dataMod <- fillVec(data, verbose = TRUE)
+
+y <- rnorm(18, -1, 1)
+dataMod2 <- fillVec(data, y, verbose = TRUE)
 
 }
 \author{
