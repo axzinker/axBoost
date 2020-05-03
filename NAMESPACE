@@ -2,6 +2,7 @@
 
 export(drawDD)
 export(fillVec)
+export(modRegGraph)
 export(parcelMe)
 import(graphics)
 import(psych)

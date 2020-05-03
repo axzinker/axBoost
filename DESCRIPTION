@@ -1,7 +1,7 @@
 Package: axBoost
 Type: Package
 Title: axBoost: A collection of useful functions
-Version: 0.1.5
+Version: 0.1.6
 Author: Axel Zinkernagel
 Maintainer: Axel Zinkernagel <zinkernagel@uni-landau.de>
 Description: A collection of useful various loose R functions. See the documentation of each function for what it is intended.
@@ -20,5 +20,6 @@ Collate:
     'drawDD.R'
     'parcelMe.R'
     'fillVec.R'
+    'modRegGraph.R'
 URL: https://github.com/axzinker/axBoost
 BugReports: https://github.com/axzinker/axBoost/issues
