@@ -271,14 +271,14 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
   lower["pval",] <- round(lower["pval",], digits = 4)
   upper <- rbind(upper, col = colNotSig, sym = symNotSig)
   lower <- rbind(lower, col = colNotSig, sym = symNotSig)
-  upper["col",] <- replace(upper["col",], upper["pval",] < .1, colMargSig)
-  upper["col",] <- replace(upper["col",], upper["pval",] < .05, colSig)
-  upper["sym",] <- replace(upper["sym",], upper["pval",] < .1, symMargSig)
-  upper["sym",] <- replace(upper["sym",], upper["pval",] < .05, symSig)
-  lower["col",] <- replace(lower["col",], lower["pval",] < .1, colMargSig)
-  lower["col",] <- replace(lower["col",], lower["pval",] < .05, colSig)
-  lower["sym",] <- replace(lower["sym",], lower["pval",] < .1, symMargSig)
-  lower["sym",] <- replace(lower["sym",], lower["pval",] < .05, symSig)
+  upper["col",] <- replace(upper["col",], as.numeric(upper["pval",]) < .1, colMargSig)
+  upper["col",] <- replace(upper["col",], as.numeric(upper["pval",]) < .05, colSig)
+  upper["sym",] <- replace(upper["sym",], as.numeric(upper["pval",]) < .1, symMargSig)
+  upper["sym",] <- replace(upper["sym",], as.numeric(upper["pval",]) < .05, symSig)
+  lower["col",] <- replace(lower["col",], as.numeric(lower["pval",]) < .1, colMargSig)
+  lower["col",] <- replace(lower["col",], as.numeric(lower["pval",]) < .05, colSig)
+  lower["sym",] <- replace(lower["sym",], as.numeric(lower["pval",]) < .1, symMargSig)
+  lower["sym",] <- replace(lower["sym",], as.numeric(lower["pval",]) < .05, symSig)
   upper["(Intercept)"] <- NULL
   lower["(Intercept)"] <- NULL
 
@@ -359,7 +359,7 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
          col = lower["col", paste0(predLower,":",moderator)], cex = 1, pos = 4) # moderator -> pathLower
 
     # Add interaction diagramm if interaction is at least marg sig.
-    if (upper["pval", paste0(predUpper,":",moderator)] < .1) { # Axel fix me: change to upper !
+    if (upper["pval", paste0(predUpper,":",moderator)] < .1) {
       rect(-6, 7.2, -3, 4.2, density = 0, border = "black")
       segments(-4.5, 4.2,-2, 3.25,lty = "dashed", col = "black")
       upperCoef <- as.numeric(upper["beta",])
@@ -404,7 +404,6 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
                                         modRangeL = moderatorSD[1], modRangeH = moderatorSD[2], plot = FALSE)
       # scale parameters into box; box is 3x3, see as -1SD, 1SD
       segments(-9.2, as.numeric(5.7 + 1.5 * intPoints["pred_L_mod_H"]), -6.2, as.numeric(5.7 + 1.5 * intPoints["pred_H_mod_H"]), lty = "dashed", col = "blue") # high moderator (1SD)
-      segments(-9.2, as.numeric(5.7 + 1.5 * intPoints["pred_L_mod_L"]), -6.2, as.numeric(5.7 + 1.5 * intPoints["pred_H_mod_L"]), lty = "solid", col = "black") # low moderator (-1SD)
       addText <- c(addText, paste0("Int.: Dashed blue ", moderatorSD[2], "SD, solid black ", moderatorSD[1], "SD"))
     }
 
