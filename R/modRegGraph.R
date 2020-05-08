@@ -10,6 +10,9 @@
 #' @param crit String with the name of the criterium
 #' @param modRangeL Lower end of the moderator to be plottet (default: -1 SD)
 #' @param modRangeH Upper end of the moderator to be plottet (default: 1 SD)
+#' @param modLabSeq Moderation label sequence (1 or 2). Cope with the lm() function,
+#' which puts out the labels in 2 different orders pred:mod (which is 1), or mod:pred
+#' (which is 2). Default is 1
 #' @param title Title of the plot
 #' @param plot Logical value if a plot should be printed (default is TRUE)
 #'
@@ -26,7 +29,7 @@
 #' @import stats
 #'
 #' @export
-modRegGraph <- function(betas, pred, mod, crit, modRangeL = -1, modRangeH = 1, title = "", plot = TRUE) {
+modRegGraph <- function(betas, pred, mod, crit, modRangeL = -1, modRangeH = 1, modLabSeq = 1, title = "", plot = TRUE) {
 
   xAchse <- c(-1.2,1.2)
   yAchse <- c(-1.2,1.2)
@@ -34,10 +37,17 @@ modRegGraph <- function(betas, pred, mod, crit, modRangeL = -1, modRangeH = 1, t
   legendposition <- c("topleft")
 
   # sequence HH, etc is: pred, mod
-  HH <- (1 * betas[pred]) + (modRangeH * betas[mod]) + (1 * modRangeH * betas[paste0(pred,":",mod)])
-  HL <- (1 * betas[pred]) + (modRangeL * betas[mod]) + (1 * modRangeL * betas[paste0(pred,":",mod)])
-  LH <- (-1 * betas[pred]) + (modRangeH * betas[mod]) + (-1 * modRangeH * betas[paste0(pred,":",mod)])
-  LL <- (-1 * betas[pred]) + (modRangeL * betas[mod]) + (-1 * modRangeL * betas[paste0(pred,":",mod)])
+  if (modLabSeq == 1) {
+    HH <- (1 * betas[pred]) + (modRangeH * betas[mod]) + (1 * modRangeH * betas[paste0(pred, ":", mod)])
+    HL <- (1 * betas[pred]) + (modRangeL * betas[mod]) + (1 * modRangeL * betas[paste0(pred, ":", mod)])
+    LH <- (-1 * betas[pred]) + (modRangeH * betas[mod]) + (-1 * modRangeH * betas[paste0(pred, ":", mod)])
+    LL <- (-1 * betas[pred]) + (modRangeL * betas[mod]) + (-1 * modRangeL * betas[paste0(pred, ":", mod)])
+  } else {
+    HH <- (1 * betas[pred]) + (modRangeH * betas[mod]) + (1 * modRangeH * betas[paste0(mod, ":", pred)])
+    HL <- (1 * betas[pred]) + (modRangeL * betas[mod]) + (1 * modRangeL * betas[paste0(mod, ":", pred)])
+    LH <- (-1 * betas[pred]) + (modRangeH * betas[mod]) + (-1 * modRangeH * betas[paste0(mod, ":", pred)])
+    LL <- (-1 * betas[pred]) + (modRangeL * betas[mod]) + (-1 * modRangeL * betas[paste0(mod, ":", pred)])
+  }
   Grafikpunkte <- c(HH,HL,LH,LL)
   names(Grafikpunkte) <- c("pred_H_mod_H","pred_H_mod_L","pred_L_mod_H","pred_L_mod_L")
 

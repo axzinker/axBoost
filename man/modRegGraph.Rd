@@ -11,6 +11,7 @@ modRegGraph(
   crit,
   modRangeL = -1,
   modRangeH = 1,
+  modLabSeq = 1,
   title = "",
   plot = TRUE
 )
@@ -27,6 +28,10 @@ modRegGraph(
 \item{modRangeL}{Lower end of the moderator to be plottet (default: -1 SD)}
 
 \item{modRangeH}{Upper end of the moderator to be plottet (default: 1 SD)}
+
+\item{modLabSeq}{Moderation label sequence (1 or 2). Cope with the lm() function,
+which puts out the labels in 2 different orders pred:mod (which is 1), or mod:pred
+(which is 2). Default is 1}
 
 \item{title}{Title of the plot}
 

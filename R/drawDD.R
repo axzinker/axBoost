@@ -359,7 +359,7 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
          col = lower["col", paste0(predLower,":",moderator)], cex = 1, pos = 4) # moderator -> pathLower
 
     # Add interaction diagramm if interaction is at least marg sig.
-    if (upper["pval", paste0(predUpper,":",moderator)] < .1) {
+    if (as.numeric(upper["pval", paste0(predUpper,":",moderator)]) < .1) {
       rect(-6, 7.2, -3, 4.2, density = 0, border = "black")
       segments(-4.5, 4.2,-2, 3.25,lty = "dashed", col = "black")
       upperCoef <- as.numeric(upper["beta",])
@@ -372,7 +372,7 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
       addText <- c(addText, paste0("Int.: Dashed blue ", moderatorSD[2], "SD, solid black ", moderatorSD[1], "SD"))
     }
 
-    if (lower["pval", paste0(predLower,":",moderator)] < .1) {
+    if (as.numeric(lower["pval", paste0(predLower,":",moderator)]) < .1) {
       rect(-6, -7.2, -3, -4.2, density = 0, border = "black")
       segments(-4.5,-4.2,-2,-3.25,lty = "dashed", col = "black")
       lowerCoef <- as.numeric(lower["beta",])
@@ -395,25 +395,28 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
     text(-5, 1, paste0(lower["beta",paste0(moderator,":",predUpper)], lower["sym",paste0(moderator,":",predUpper)]),
          col =  lower["col",paste0(moderator,":",predUpper)], cex = 1, pos = 4) # moderator -> path2LowerfromUpper
 
-    if (upper["pval", paste0(moderator,":",predLower)] < .1) {
+    if (as.numeric(upper["pval", paste0(moderator,":",predLower)]) < .1) {
       rect(-9.2, 7.2, -6.2, 4.2, density = 0, border = "black")
-      segments(-7.7,4.2,-2.2,1.45,lty = "dashed", col = "black")
+      segments(-7.7,4.2,-2.3,1.45,lty = "dashed", col = "black")
       upperCoef <- as.numeric(upper["beta",])
       names(upperCoef) <- names(upper["beta",])
       intPoints <- axBoost::modRegGraph(betas = upperCoef, pred = predLower, mod = moderator, crit = critUpper,
-                                        modRangeL = moderatorSD[1], modRangeH = moderatorSD[2], plot = FALSE)
+                                        modRangeL = moderatorSD[1], modRangeH = moderatorSD[2], modLabSeq = 2,
+                                        plot = FALSE)
       # scale parameters into box; box is 3x3, see as -1SD, 1SD
       segments(-9.2, as.numeric(5.7 + 1.5 * intPoints["pred_L_mod_H"]), -6.2, as.numeric(5.7 + 1.5 * intPoints["pred_H_mod_H"]), lty = "dashed", col = "blue") # high moderator (1SD)
+      segments(-9.2, as.numeric(5.7 + 1.5 * intPoints["pred_L_mod_L"]), -6.2, as.numeric(5.7 + 1.5 * intPoints["pred_H_mod_L"]), lty = "solid", col = "black") # low moderator (-1SD)
       addText <- c(addText, paste0("Int.: Dashed blue ", moderatorSD[2], "SD, solid black ", moderatorSD[1], "SD"))
     }
 
-    if (lower["pval", paste0(moderator,":",predUpper)] < .1) {
+    if (as.numeric(lower["pval", paste0(moderator,":",predUpper)]) < .1) {
       rect(-9.2, -7.2, -6.2, -4.2, density = 0, border = "black")
       segments(-7.7,-4.2,-2.2,-1.45,lty = "dashed", col = "black")
       lowerCoef <- as.numeric(lower["beta",])
       names(lowerCoef) <- names(lower["beta",])
       intPoints <- axBoost::modRegGraph(betas = lowerCoef, pred = predUpper, mod = moderator, crit = critLower,
-                                        modRangeL = moderatorSD[1], modRangeH = moderatorSD[2], plot = FALSE)
+                                        modRangeL = moderatorSD[1], modRangeH = moderatorSD[2], modLabSeq = 2,
+                                        plot = FALSE)
       # scale parameters into box; box is 3x3, see as -1SD, 1SD
       segments(-9.2, as.numeric(-5.7 + 1.5 * intPoints["pred_L_mod_H"]), -6.2, as.numeric(-5.7 + 1.5 * intPoints["pred_H_mod_H"]), lty = "dashed", col = "blue") # high moderator (1SD)
       segments(-9.2, as.numeric(-5.7 + 1.5 * intPoints["pred_L_mod_L"]), -6.2, as.numeric(-5.7 + 1.5 * intPoints["pred_H_mod_L"]), lty = "solid", col = "black") # low moderator (-1SD)
@@ -457,6 +460,9 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
   if (robust == TRUE) {
     addText <- c(addText,"Robust regr. and cor.")
   }
+
+  # Add sampel size
+  addText <- c(addText, paste0("N = ", nrow(data)))
 
   if (length(addText) > 0) {
     mtext(paste0("Note: ", paste0(unique(addText), collapse = "; ")), side = 1, line = 2, adj = 0, cex = 1)
