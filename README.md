@@ -1,3 +1,3 @@
 # axBoost 
 
-This package contains various functions to graphically display and manage data.
+This package contains various R functions to manage and graphically display data.
