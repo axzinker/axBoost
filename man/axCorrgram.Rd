@@ -4,7 +4,7 @@
 \alias{axCorrgram}
 \title{Corrgram-like correlation table plot}
 \usage{
-axCorrgram(data, fontsize = 4.8)
+axCorrgram(data, fontsize = 3)
 }
 \arguments{
 \item{data}{Matrix / DataFrame with items in columns. For

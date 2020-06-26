@@ -17,7 +17,7 @@
 #'
 #'
 #' @export
-axCorrgram <- function(data, fontsize = 4.8){
+axCorrgram <- function(data, fontsize = 3){
 
   # Helper Functions
 
@@ -25,14 +25,19 @@ axCorrgram <- function(data, fontsize = 4.8){
     usr <- par("usr")
     on.exit(par(usr))
     par(usr = c(0, 1, 0, 1))
-    r <- cor(x, y, use = "complete.obs")
+    r <- round(cor(x, y, use = "complete.obs"),2)
     sig <- cor.test(x, y, use = "complete.obs")
     txt <- format(c(r, 0.123456789), digits = digits)[1]
     txt <- paste(prefix, txt, sep = "")
     cex.cor <- fontsize / strwidth(txt)
-    text(0.5, 0.5, txt, cex = cex.cor * (1 + r) / 2, col = "black")
-    if ((sig$p.value < .1) & (sig$p.value >= .05)) {text(0.5, 0.5, txt, cex = cex.cor * (1 + r) / 2, col = "blue")}
-    if (sig$p.value < .05) {text(0.5, 0.5, txt, cex = cex.cor * (1 + r) / 2, col = "red")}
+    if (r >= 0) {
+      if ((sig$p.value < .1) & (sig$p.value >= .05)) {text(0.5, 0.5, paste0(txt,"+"), cex = cex.cor * (1 + abs(r)) / 2, col = "darkred")}
+      if (sig$p.value < .05) {text(0.5, 0.5, paste0(txt,"*"), cex = cex.cor * (1 + abs(r)) / 2, col = "red")}
+    } else {
+      if ((sig$p.value < .1) & (sig$p.value >= .05)) {text(0.5, 0.5, paste0(txt,"+"), cex = cex.cor * (1 + abs(r)) / 2, col = "darkblue")}
+      if (sig$p.value < .05) {text(0.5, 0.5, paste0(txt,"*"), cex = cex.cor * (1 + abs(r)) / 2, col = "blue")}
+    }
+    if (sig$p.value >= .1) {text(0.5, 0.5, txt, cex = cex.cor * (1 + abs(r)) / 2, col = "black")}
   }
 
   panel.hist <- function(x){
