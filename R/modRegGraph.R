@@ -13,6 +13,7 @@
 #' @param modLabSeq Moderation label sequence (1 or 2). Cope with the lm() function,
 #' which puts out the labels in 2 different orders pred:mod (which is 1), or mod:pred
 #' (which is 2). Default is 1
+#' @param plotRange Plot range of the quadratic plot (default: 1 SD).
 #' @param title Title of the plot
 #' @param plot Logical value if a plot should be printed (default is TRUE)
 #'
@@ -29,10 +30,10 @@
 #' @import stats
 #'
 #' @export
-modRegGraph <- function(betas, pred, mod, crit, modRangeL = -1, modRangeH = 1, modLabSeq = 1, title = "", plot = TRUE) {
+modRegGraph <- function(betas, pred, mod, crit, modRangeL = -1, modRangeH = 1, modLabSeq = 1, plotRange = 1, title = "", plot = TRUE) {
 
-  xAchse <- c(-1.2,1.2)
-  yAchse <- c(-1.2,1.2)
+  xAchse <- c(plotRange * (-1), plotRange)
+  yAchse <- c(plotRange * (-1), plotRange)
   moderatorlabels <- c(paste0("low ",mod,"(",modRangeL," SD)"),paste0("high ",mod,"(",modRangeH," SD)"))
   legendposition <- c("topleft")
 
@@ -55,7 +56,7 @@ modRegGraph <- function(betas, pred, mod, crit, modRangeL = -1, modRangeH = 1, m
   mHigh <- matrix(c(-1,1,LH,HH), nrow = 2)
 
   if (plot) {
-    plot(mLow, xlim = xAchse, ylim = yAchse, type = "n", xlab = pred, ylab = crit, title = title)
+    plot(mLow, xlim = xAchse, ylim = yAchse, type = "n", xlab = pred, ylab = crit, main = title)
 
     for (k in seq(yAchse[1], yAchse[2], by = .1)) {
       if (round(k %% .2,2) == 0) {
