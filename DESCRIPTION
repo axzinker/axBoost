@@ -22,5 +22,10 @@ Collate:
     'fillVec.R'
     'modRegGraph.R'
     'axCorrgram.R'
+    'df1.R'
 URL: https://github.com/axzinker/axBoost
 BugReports: https://github.com/axzinker/axBoost/issues
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

@@ -1,0 +1,94 @@
+---
+title: "axBoost Vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{axBoost Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(axBoost)
+```
+
+<!-- Install vignette with devtools::install(build_vignettes = TRUE) on the console -->
+
+The package axBoost contains a collection of rather unrelated functions, which 
+I found useful to have them exported and available as an own package. At the
+moment of writing, the functions mainly help to visualize correlations between 
+many variables in a large data set (~ 300 variables). For example, this includes 
+functions to plot a correlogram or to plot double dissocitations
+(e.g., Asendorpf, Banse, and Mücke, 2002) with and without moderator effects.
+The functions generating a plot are described below in this vignette, the 
+functionality of functions without graphical output is explained in the example 
+part of the help page of the function.
+
+
+Asendorpf, J. B., Banse, R., & Mücke, D. (2002). Double dissociation
+between implicit and explicit personality self-concept: The case of shy
+behavior. *Journal of Personality and Social Psychology, 83*(2), 380–393.
+
+# The function axCorrgram()
+
+A correlogram of a matrix / data frame is plotted. In the upper right triangle 
+the size of correlations are depicted. Red and blue indicate that the 
+correlations are significant, either positive (red) or negative (blue), also 
+marked with a "*". Marginal significant correlations are colored with darkred 
+(positive) and darkblue (negative), additionally marked with a "+". This is
+helpful to detect patterns and structures in the data.
+The diagnoal contains the variable names with a histogram. The lower left 
+triangle depicts a scatter plot with a lowess line. This helps for searching for
+potential outliers. Up to 16 variables can be correlated  in one correlogram.
+The option fontsize is used to adapt the size of the correlations in the upper
+right to the size of the boxes.
+
+```{r, fig.dim = c(8, 6), out.width = "100%"}
+axCorrgram(axBoost::df1, fontsize = .7)
+```
+
+# The function modRegGraph()
+
+This Function plots a moderated regression interaction diagramm and returns the 
+coordinates of the points pred_H_mod_H pred_H_mod_L pred_L_mod_H pred_L_mod_L 
+to be used elswhere (e.g., in another plot). H denotes high (+1 SD), L denotes 
+low (-1 SD).
+
+
+```{r}
+reg1 <- lm(AutoBehav ~ IndMeasure * mod, data = df1)
+summary(reg1)
+```
+
+```{r, fig.dim = c(6, 6), out.width = "60%"}
+modRegGraph(coef(reg1), pred = "IndMeasure", mod = "mod", crit = "AutoBehav", plotRange = 1.7)
+```
+
+
+# The function drawDD()
+
+This function draws a double dissociation. This means that two regressions have 
+to be computed. Because this is very prone to error when done by hand, the best 
+way to use this function is in a loop, with predefined predictors, criteria and
+moderators. The figure below shows a double dissociation with a moderator.
+
+The function is quite versatile and allows to
+
+* include moderators (optionally on both paths of a regression)
+* include covariates
+* compute robust regressions (using the robust and WRS2 packages)
+* use the residuals of the covariates as criteria
+* optionally print the output of the lm() and cor() functions
+
+```{r, fig.dim = c(8, 6), out.width = "100%"}
+drawDD(data = axBoost::df1, predUpper = "IndMeasure", predLower = "DirMeasure", 
+  critUpper = "AutoBehav", critLower = "ContrBehav", moderator = "mod", 
+  title = "Testplot", printReg = TRUE)
+```
+

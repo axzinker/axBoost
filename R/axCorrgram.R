@@ -13,8 +13,9 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'
 #' @examples
-#' # Axel: fix me
-#'
+#' \dontrun{
+#' axCorrgram(axBoost::df1, fontsize = .7)
+#' }
 #'
 #' @export
 axCorrgram <- function(data, fontsize = 3){

@@ -18,40 +18,41 @@ modRegGraph(
 )
 }
 \arguments{
-\item{betas}{Coefficients (Betas) of the moderated regression}
+\item{betas}{Coefficients (Betas) of the moderated regression.}
 
-\item{pred}{String with the name of the predictor}
+\item{pred}{String with the name of the predictor.}
 
-\item{mod}{String with the name of the moderator}
+\item{mod}{String with the name of the moderator.}
 
-\item{crit}{String with the name of the criterium}
+\item{crit}{String with the name of the criterium.}
 
-\item{modRangeL}{Lower end of the moderator to be plottet (default: -1 SD)}
+\item{modRangeL}{Lower end of the moderator to be plottet (default: -1 SD).}
 
-\item{modRangeH}{Upper end of the moderator to be plottet (default: 1 SD)}
+\item{modRangeH}{Upper end of the moderator to be plottet (default: 1 SD).}
 
 \item{modLabSeq}{Moderation label sequence (1 or 2). Cope with the lm() function,
 which puts out the labels in 2 different orders pred:mod (which is 1), or mod:pred
-(which is 2). Default is 1}
+(which is 2). Default is 1.}
 
-\item{plotRange}{Plot range of the quadratic plot (default: 1 SD).}
+\item{plotRange}{Plot range of the square plot (default: 1 SD).}
 
-\item{title}{Title of the plot}
+\item{title}{Title of the plot.}
 
-\item{plot}{Logical value if a plot should be printed (default is TRUE)}
+\item{plot}{Logical value if a plot should be printed (default is TRUE).}
 }
 \value{
 Named vector with the four coordinates (pred_H_mod_H, pred_H_mod_L,
 pred_L_mod_H, pred_L_mod_L) on the y-axis for predictor at -1/1 SD
-and moderator at modRangeL/modRangeH SD
+and moderator at modRangeL/modRangeH SD.
 }
 \description{
 Function plots a moderated regression interaction diagramm and returns the
 coordinates of the points pred_H_mod_H pred_H_mod_L pred_L_mod_H pred_L_mod_L
-to be used elswhere (e.g., in another plot).
+to be used elswhere (e.g., in another plot). H denotes high (+1 SD), L denotes
+low (-1 SD).
 }
 \examples{
-# Axel: fix me
+# See vignette
 
 }
 \author{

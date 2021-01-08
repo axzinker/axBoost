@@ -15,6 +15,8 @@ drawDD(
   covResidAsDep = FALSE,
   moderator = NULL,
   moderatorSD = c(-1, 1),
+  modLabSeq = 1,
+  plotRange = 1,
   modBothPaths = FALSE,
   robust = FALSE,
   printReg = FALSE,
@@ -45,6 +47,12 @@ predictor to criterion}
 \item{moderatorSD}{Defines the standard deviations for which the slope
 lines are plotted. Default is -1 and 1. For example, for experimetal group
 / control group design use c(0,1).}
+
+\item{modLabSeq}{Moderation label sequence (1 or 2). Cope with the lm() function,
+which puts out the labels in 2 different orders pred:mod (which is 1), or mod:pred
+(which is 2). Default is 1.}
+
+\item{plotRange}{Plot range of the square plot of a (marginally) significant interaction (only works with default of 1 SD at the moment).}
 
 \item{modBothPaths}{If TRUE, a moderator effect is computed for both paths. Default is FALSE.}
 
@@ -93,7 +101,7 @@ All variables are scaled before computing the regressions to cope with
 multicolinearity in the moderated case.
 }
 \examples{
-# Axel: fix me
+# See vignette
 
 }
 \author{

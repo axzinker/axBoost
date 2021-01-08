@@ -47,6 +47,10 @@
 #' @param moderatorSD Defines the standard deviations for which the slope
 #' lines are plotted. Default is -1 and 1. For example, for experimetal group
 #' / control group design use c(0,1).
+#' @param modLabSeq Moderation label sequence (1 or 2). Cope with the lm() function,
+#' which puts out the labels in 2 different orders pred:mod (which is 1), or mod:pred
+#' (which is 2). Default is 1.
+#' @param plotRange Plot range of the square plot of a (marginally) significant interaction (only works with default of 1 SD at the moment).
 #' @param modBothPaths If TRUE, a moderator effect is computed for both paths. Default is FALSE.
 #' @param robust Logical value if robust parameter estimation is used (robust::lmRob() and WRS2::pbcor()). Default is FALSE.
 #' @param printReg Print the summary () of the regression coefficients. Default is FALSE.
@@ -57,7 +61,7 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'
 #' @examples
-#' # Axel: fix me
+#' # See vignette
 #'
 #' @import graphics
 #' @import stats
@@ -65,7 +69,8 @@
 #' @export
 drawDD <- function(data, predUpper, predLower, critUpper, critLower,
                    covUpper = NULL, covLower = NULL, covResidAsDep = FALSE,
-                   moderator = NULL, moderatorSD = c(-1,1), modBothPaths = FALSE,
+                   moderator = NULL, moderatorSD = c(-1,1),
+                   modLabSeq = 1, plotRange = 1, modBothPaths = FALSE,
                    robust = FALSE, printReg = FALSE, title = ""){
 
   # Define constants ####
@@ -365,7 +370,8 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
       upperCoef <- as.numeric(upper["beta",])
       names(upperCoef) <- names(upper["beta",])
       intPoints <- axBoost::modRegGraph(betas = upperCoef, pred = predUpper, mod = moderator, crit = critUpper,
-                                        modRangeL = moderatorSD[1], modRangeH = moderatorSD[2], plot = FALSE)
+                                        modRangeL = moderatorSD[1], modRangeH = moderatorSD[2],
+                                        modLabSeq = modLabSeq, plotRange = plotRange, plot = FALSE)
       # scale parameters into box; box is 3x3, see as -1SD, 1SD
       segments(-6, as.numeric(5.7 + 1.5 * intPoints["pred_L_mod_H"]), -3, as.numeric(5.7 + 1.5 * intPoints["pred_H_mod_H"]), lty = "dashed", col = "blue") # high moderator (1SD)
       segments(-6, as.numeric(5.7 + 1.5 * intPoints["pred_L_mod_L"]), -3, as.numeric(5.7 + 1.5 * intPoints["pred_H_mod_L"]), lty = "solid", col = "black") # low moderator (-1SD)

@@ -22,8 +22,9 @@ lower left triangle a scatterplot with smoothed line is plotted.
 In the diagonal histogramms are plotted
 }
 \examples{
-# Axel: fix me
-
+\dontrun{
+axCorrgram(axBoost::df1, fontsize = .7)
+}
 
 }
 \author{

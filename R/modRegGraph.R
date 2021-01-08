@@ -2,29 +2,30 @@
 #'
 #' Function plots a moderated regression interaction diagramm and returns the
 #' coordinates of the points pred_H_mod_H pred_H_mod_L pred_L_mod_H pred_L_mod_L
-#' to be used elswhere (e.g., in another plot).
+#' to be used elswhere (e.g., in another plot). H denotes high (+1 SD), L denotes
+#' low (-1 SD).
 #'
-#' @param betas Coefficients (Betas) of the moderated regression
-#' @param pred String with the name of the predictor
-#' @param mod String with the name of the moderator
-#' @param crit String with the name of the criterium
-#' @param modRangeL Lower end of the moderator to be plottet (default: -1 SD)
-#' @param modRangeH Upper end of the moderator to be plottet (default: 1 SD)
+#' @param betas Coefficients (Betas) of the moderated regression.
+#' @param pred String with the name of the predictor.
+#' @param mod String with the name of the moderator.
+#' @param crit String with the name of the criterium.
+#' @param modRangeL Lower end of the moderator to be plottet (default: -1 SD).
+#' @param modRangeH Upper end of the moderator to be plottet (default: 1 SD).
 #' @param modLabSeq Moderation label sequence (1 or 2). Cope with the lm() function,
 #' which puts out the labels in 2 different orders pred:mod (which is 1), or mod:pred
-#' (which is 2). Default is 1
-#' @param plotRange Plot range of the quadratic plot (default: 1 SD).
-#' @param title Title of the plot
-#' @param plot Logical value if a plot should be printed (default is TRUE)
+#' (which is 2). Default is 1.
+#' @param plotRange Plot range of the square plot (default: 1 SD).
+#' @param title Title of the plot.
+#' @param plot Logical value if a plot should be printed (default is TRUE).
 #'
 #' @return Named vector with the four coordinates (pred_H_mod_H, pred_H_mod_L,
 #' pred_L_mod_H, pred_L_mod_L) on the y-axis for predictor at -1/1 SD
-#' and moderator at modRangeL/modRangeH SD
+#' and moderator at modRangeL/modRangeH SD.
 #'
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'
 #' @examples
-#' # Axel: fix me
+#' # See vignette
 #'
 #' @import graphics
 #' @import stats
