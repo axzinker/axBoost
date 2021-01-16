@@ -1,11 +1,11 @@
 Package: axBoost
 Type: Package
 Title: axBoost: A collection of useful functions
-Version: 0.1.8
+Version: 0.1.9
 Author: Axel Zinkernagel
 Maintainer: Axel Zinkernagel <zinkernagel@uni-landau.de>
 Description: A collection of useful various loose R functions. See the documentation of each function for what it is intended.
-Depends: R (>= 3.6.0)
+Depends: R (>= 4.0.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -15,7 +15,12 @@ Imports:
     IAT (>= 0.3),
     plotrix (>= 3.7),
     robust (>= 0.5),
-    WRS2 (>= 1.0)
+    WRS2 (>= 1.0),
+    openssl (>= 1.4.3),
+    emayili (>= 0.4.4),
+    magrittr (>= 2.0.1),
+    png (>= 0.1-7),
+    grDevices (>= 4.0.3)
 Collate: 
     'drawDD.R'
     'parcelMe.R'
@@ -23,6 +28,9 @@ Collate:
     'modRegGraph.R'
     'axCorrgram.R'
     'df1.R'
+    'axDecode.R'
+    'genSubjHconf.R'
+    'whichKey.R'
 URL: https://github.com/axzinker/axBoost
 BugReports: https://github.com/axzinker/axBoost/issues
 Suggests: 
