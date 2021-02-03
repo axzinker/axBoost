@@ -42,6 +42,7 @@
 #' @param covUpper Optional string vector with the names of the covariates for the criterion of the upper double dissociation path.
 #' @param covLower Optional string vector with the names of the covariates for the criterion of the lower double dissociation path.
 #' @param covResidAsDep If FALSE (the default), a multiple regression is computed. If TRUE, the residuals of the covariate regression are used as dependent variable.
+#' @param plotCov Include covariates in the lower part of the plot. Default is TRUE, but can be switched off (e.g., if variable names are too long)
 #' @param moderator String with the name of the Moderator of the upper and lower direct path from
 #' predictor to criterion
 #' @param moderatorSD Defines the standard deviations for which the slope
@@ -68,7 +69,8 @@
 #'
 #' @export
 drawDD <- function(data, predUpper, predLower, critUpper, critLower,
-                   covUpper = NULL, covLower = NULL, covResidAsDep = FALSE,
+                   covUpper = NULL, covLower = NULL,
+                   covResidAsDep = FALSE, plotCov = TRUE,
                    moderator = NULL, moderatorSD = c(-1,1),
                    modLabSeq = 1, plotRange = 1, modBothPaths = FALSE,
                    robust = FALSE, printReg = FALSE, title = ""){
@@ -453,14 +455,16 @@ drawDD <- function(data, predUpper, predLower, critUpper, critLower,
     }
   }
 
-  # Add covariates, if available ####
-  # Upper regression
-  if (!is.null(covUpper)) {
-    mtext(covUpperText, side = 1, line = 0, adj = 0, cex = 1)
-  }
-  # Lower regression
-  if (!is.null(covLower)) {
-    mtext(covLowerText, side = 1, line = 1, adj = 0, cex = 1)
+  # Add covariates, if plotCov == TRUE and if available ####
+  if (plotCov) {
+    # Upper regression
+    if (!is.null(covUpper)) {
+      mtext(covUpperText, side = 1, line = 0, adj = 0, cex = 1)
+    }
+    # Lower regression
+    if (!is.null(covLower)) {
+      mtext(covLowerText, side = 1, line = 1, adj = 0, cex = 1)
+    }
   }
 
   if (robust == TRUE) {

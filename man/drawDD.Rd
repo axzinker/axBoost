@@ -13,6 +13,7 @@ drawDD(
   covUpper = NULL,
   covLower = NULL,
   covResidAsDep = FALSE,
+  plotCov = TRUE,
   moderator = NULL,
   moderatorSD = c(-1, 1),
   modLabSeq = 1,
@@ -40,6 +41,8 @@ predLower, critUpper, critLower, and optionally covariates and a moderator.}
 \item{covLower}{Optional string vector with the names of the covariates for the criterion of the lower double dissociation path.}
 
 \item{covResidAsDep}{If FALSE (the default), a multiple regression is computed. If TRUE, the residuals of the covariate regression are used as dependent variable.}
+
+\item{plotCov}{Include covariates in the lower part of the plot. Default is TRUE, but can be switched off (e.g., if variable names are too long)}
 
 \item{moderator}{String with the name of the Moderator of the upper and lower direct path from
 predictor to criterion}
