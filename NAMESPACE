@@ -2,6 +2,7 @@
 
 export(axCorrgram)
 export(axDecode)
+export(axFormatTableDat)
 export(drawDD)
 export(fillVec)
 export(genSubjHconf)

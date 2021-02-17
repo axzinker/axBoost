@@ -1,7 +1,7 @@
 Package: axBoost
 Type: Package
 Title: axBoost: A collection of useful functions
-Version: 0.1.9
+Version: 0.1.10
 Author: Axel Zinkernagel
 Maintainer: Axel Zinkernagel <zinkernagel@uni-landau.de>
 Description: A collection of useful various loose R functions. See the documentation of each function for what it is intended.
@@ -31,6 +31,7 @@ Collate:
     'axDecode.R'
     'genSubjHconf.R'
     'whichKey.R'
+    'axFormatTableDat.R'
 URL: https://github.com/axzinker/axBoost
 BugReports: https://github.com/axzinker/axBoost/issues
 Suggests: 
