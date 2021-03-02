@@ -18,7 +18,9 @@ modRegGraph(
 )
 }
 \arguments{
-\item{betas}{Coefficients (Betas) of the moderated regression.}
+\item{betas}{Coefficients (Betas) of the moderated regression. Attribute names
+are used as beta labels, generated for example by coef(lm(my_model)). Attribute
+labels can also be used to mask variable names in a regression plot.}
 
 \item{pred}{String with the name of the predictor.}
 
@@ -52,7 +54,12 @@ to be used elswhere (e.g., in another plot). H denotes high (+1 SD), L denotes
 low (-1 SD).
 }
 \examples{
-# See vignette
+betas <- coef(lm("AutoBehav ~ IndMeasure * mod", data = df1))
+
+modRegGraph(betas, pred = "IndMeasure", mod = "mod", crit = "AutoBehav",
+title = "Title plot")
+
+# See also vignette
 
 }
 \author{

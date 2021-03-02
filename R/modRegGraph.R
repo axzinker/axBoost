@@ -5,7 +5,9 @@
 #' to be used elswhere (e.g., in another plot). H denotes high (+1 SD), L denotes
 #' low (-1 SD).
 #'
-#' @param betas Coefficients (Betas) of the moderated regression.
+#' @param betas Coefficients (Betas) of the moderated regression. Attribute names
+#' are used as beta labels, generated for example by coef(lm(my_model)). Attribute
+#' labels can also be used to mask variable names in a regression plot.
 #' @param pred String with the name of the predictor.
 #' @param mod String with the name of the moderator.
 #' @param crit String with the name of the criterium.
@@ -25,7 +27,12 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'
 #' @examples
-#' # See vignette
+#' betas <- coef(lm("AutoBehav ~ IndMeasure * mod", data = df1))
+#'
+#' modRegGraph(betas, pred = "IndMeasure", mod = "mod", crit = "AutoBehav",
+#' title = "Title plot")
+#'
+#' # See also vignette
 #'
 #' @import graphics
 #' @import stats
@@ -35,7 +42,7 @@ modRegGraph <- function(betas, pred, mod, crit, modRangeL = -1, modRangeH = 1, m
 
   xAchse <- c(plotRange * (-1), plotRange)
   yAchse <- c(plotRange * (-1), plotRange)
-  moderatorlabels <- c(paste0("low ",mod,"(",modRangeL," SD)"),paste0("high ",mod,"(",modRangeH," SD)"))
+  moderatorlabels <- c(paste0("low ",mod," (",modRangeL," SD)"),paste0("high ",mod," (",modRangeH," SD)"))
   legendposition <- c("topleft")
 
   # sequence HH, etc is: pred, mod
