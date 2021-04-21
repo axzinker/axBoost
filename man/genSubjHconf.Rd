@@ -21,7 +21,8 @@ genSubjHconf(
   mailBody = "",
   SMTPserver = "",
   SMTPlogin = "",
-  SMTPpassword = ""
+  SMTPpassword = "",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -76,6 +77,9 @@ encryption (port 465) is used.}
 \item{SMTPlogin}{String with the login of your mailserver}
 
 \item{SMTPpassword}{String with the password of your mailserver}
+
+\item{verbose}{Logical to have a verbose console output (TRUE, default) or
+not (FALSE)}
 }
 \value{
 Returns PDFs with information about subject hours, study title,

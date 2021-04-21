@@ -42,6 +42,8 @@
 #' encryption (port 465) is used.
 #' @param SMTPlogin String with the login of your mailserver
 #' @param SMTPpassword String with the password of your mailserver
+#' @param verbose Logical to have a verbose console output (TRUE, default) or
+#' not (FALSE)
 #' @return Returns PDFs with information about subject hours, study title,
 #' subjects email address, name of the organisator of the study, digital
 #' signature of the organisator, timestamp of the encryption key, and a code
@@ -97,7 +99,8 @@ genSubjHconf <- function(studyTitle = "Study title", organizer = "Organizer",
                          fontscale = 1,
                          sendMail = FALSE, mailFrom = "", mailCc = "",
                          mailSubject = "", mailBody = "", SMTPserver = "",
-                         SMTPlogin = "", SMTPpassword = "") {
+                         SMTPlogin = "", SMTPpassword = "",
+                         verbose = TRUE) {
 
   # first checks of entered data
   if (workingDirectory == "") {
@@ -106,6 +109,14 @@ genSubjHconf <- function(studyTitle = "Study title", organizer = "Organizer",
 
   if (newKey == FALSE && useKey == "") {
     stop("Encryption error: either generate a new key or use an exiting one!")
+  }
+
+  # Test if email-adresses are conform to RFC5322
+  # https://www.emailregex.com/
+  # https://stackoverflow.com/questions/201323/how-to-validate-an-email-address-using-a-regular-expression
+  emailRegexp <- c("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])")
+  if (length(table(regexpr(emailRegexp, mailTo) > 0)) != 1) {
+    stop(paste0("These email adresses are not conform to RFC 5322: ", paste(mailTo[regexpr(emailRegexp,mailTo) < 0], collapse = ", ")))
   }
 
   setwd(workingDirectory)
@@ -118,6 +129,9 @@ genSubjHconf <- function(studyTitle = "Study title", organizer = "Organizer",
     timestamp4save <- charToRaw(timestamp)
     timestamp4save <- as.character(timestamp4save)
     timestamp4save <- paste(timestamp4save, collapse = "")
+    if (verbose) {
+      cat(paste0("Generating new key: ","key_",timestamp4save,".rda","\n"))
+    }
     save(key, file = paste0(workingDirectory,"key_",timestamp4save,".rda"))
   } else {
     if (useKey == "dummykey_313937302d30312d30312030303a30303a3031.rda") {
@@ -163,6 +177,9 @@ genSubjHconf <- function(studyTitle = "Study title", organizer = "Organizer",
     # token == paste0(token1,token2)# muss TRUE ergeben
 
     # graphics computed in inch; if @ is not allowed in filenames, substitute it in the following line
+    if (verbose) {
+      cat(paste0("Generating pdf for: ",mailTo[i],"\n"))
+    }
     grDevices::pdf(file = paste0(workingDirectory, gsub("@", "@", mailTo[i], fixed = TRUE), ".pdf"), width = 18, height = 2)
     par(mar = c(0,0,0,0))
     plot(NULL, xlim = c(0, 18), ylim = c(0, 2), xaxt = 'n', yaxt = 'n', type = "n", axes = FALSE)
@@ -204,12 +221,18 @@ genSubjHconf <- function(studyTitle = "Study title", organizer = "Organizer",
     grDevices::dev.off()
 
     if (sendMail) { # send mails if TRUE
+      if (verbose) {
+        cat(paste0("Sending pdf to email: ", mailTo[i], " "))
+      }
       email <- emayili::envelope(to = mailTo[i], from = mailFrom, cc =  mailCc, subject = mailSubject, text = mailBody)
       email <- email %>% emayili::attachment(paste0(workingDirectory, mailTo[i], ".pdf"))
       #print(email, details = TRUE)
 
       smtp <- emayili::server(host = SMTPserver, port = 465, username = SMTPlogin, password = SMTPpassword)
       smtp(email, verbose = FALSE)
+      if (verbose) {
+        cat(paste0("(sent)\n"))
+      }
     }
   }
 }
