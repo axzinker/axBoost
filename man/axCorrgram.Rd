@@ -4,12 +4,14 @@
 \alias{axCorrgram}
 \title{Corrgram-like correlation table plot}
 \usage{
-axCorrgram(data, fontsize = 3)
+axCorrgram(data, method = "pearson", fontsize = 3)
 }
 \arguments{
-\item{data}{Matrix / DataFrame with items in columns. For
-parallelizedBy =="IAT", data must be a logfile prepared for the cleanIAT()
-function of the IAT package.}
+\item{data}{Matrix / DataFrame with items in columns.}
+
+\item{method}{A character string indicating which correlation coefficient
+(or covariance) is to be computed. One of "pearson" (default), "kendall",
+or "spearman".}
 
 \item{fontsize}{Base font size of the correlations in cex}
 }

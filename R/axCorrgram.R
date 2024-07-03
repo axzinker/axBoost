@@ -4,9 +4,10 @@
 #' lower left triangle a scatterplot with smoothed line is plotted.
 #' In the diagonal histogramms are plotted
 #'
-#' @param data Matrix / DataFrame with items in columns. For
-#' parallelizedBy =="IAT", data must be a logfile prepared for the cleanIAT()
-#' function of the IAT package.
+#' @param data Matrix / DataFrame with items in columns.
+#' @param method A character string indicating which correlation coefficient
+#' (or covariance) is to be computed. One of "pearson" (default), "kendall",
+#' or "spearman".
 #' @param fontsize Base font size of the correlations in cex
 #' @return Returns a data frame containing the parcels.
 #'
@@ -18,7 +19,7 @@
 #' }
 #'
 #' @export
-axCorrgram <- function(data, fontsize = 3){
+axCorrgram <- function(data, method = "pearson", fontsize = 3){
 
   # Helper Functions
 
@@ -26,7 +27,7 @@ axCorrgram <- function(data, fontsize = 3){
     usr <- par("usr")
     on.exit(par(usr))
     par(usr = c(0, 1, 0, 1))
-    r <- round(cor(x, y, use = "complete.obs"),2)
+    r <- round(cor(x, y, method = method, use = "complete.obs"),2)
     sig <- cor.test(x, y, use = "complete.obs")
     txt <- format(c(r, 0.123456789), digits = digits)[1]
     txt <- paste(prefix, txt, sep = "")
